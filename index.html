@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>狂野飙车9 · 擂台选车助手 (无重复分配·外部数据)</title>
+    <title>狂野飙车9 · 擂台选车助手 (枚举所有方案)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -196,6 +196,22 @@
             margin-bottom: 16px;
             font-size: 1.1rem;
         }
+        .scheme-selector {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .scheme-selector label {
+            color: #b7c6ec;
+            font-size: 0.95rem;
+        }
+        .scheme-selector select {
+            width: auto;
+            min-width: 280px;
+            background: #1d263f;
+            border-color: #4e6390;
+        }
         .result-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -248,8 +264,8 @@
 </head>
 <body>
 <div class="card">
-    <h1>🏁 擂台选车 · 无重复分配</h1>
-    <div class="sub">五张图推荐车辆不重复，按地图顺序优先分配。点击车名点亮车库。数据已外置，加载完成后可用。</div>
+    <h1>🏁 擂台选车 · 枚举所有方案</h1>
+    <div class="sub">五张图推荐车辆不重复，列出所有可能的分配方案，供您选择。</div>
 
     <div class="map-rows" id="mapRowsContainer"></div>
 
@@ -265,14 +281,18 @@
     </div>
 
     <div class="action">
-        <button class="recommend-btn" id="recommendBtn">⚡ 匹配推荐（不重复） ⚡</button>
+        <button class="recommend-btn" id="recommendBtn">⚡ 重新计算所有方案 ⚡</button>
     </div>
 
     <div class="result-panel">
-        <div class="result-title">📋 推荐结果 (车辆不重复)</div>
+        <div class="result-title">📋 所有可行方案</div>
+        <div class="scheme-selector">
+            <label for="schemeSelect">选择方案：</label>
+            <select id="schemeSelect"></select>
+        </div>
         <div class="result-grid" id="resultGrid"></div>
     </div>
-    <div class="footer-note">* 斜杠车名如“秋王/sf90”表示任一均可；推荐按1→5图顺序分配，后图跳过前图已用车。</div>
+    <div class="footer-note">* 斜杠车名如“秋王/sf90”表示任一均可；方案按地图顺序分配，同一辆车不会出现在两个图中。</div>
 </div>
 
 <script>
@@ -295,6 +315,7 @@
     const selectAllBtn = document.getElementById('selectAllBtn');
     const clearAllBtn = document.getElementById('clearAllBtn');
     const recommendBtn = document.getElementById('recommendBtn');
+    const schemeSelect = document.getElementById('schemeSelect');
     const resultGrid = document.getElementById('resultGrid');
 
     const ROWS = 5;
@@ -303,6 +324,9 @@
 
     // 点亮状态
     let selectedCars = new Set();
+
+    // 当前所有方案列表
+    let allSchemes = [];  // 每个元素为长度为5的数组，对应每张图分配的车名（null表示该图未选或无法分配）
 
     // ---------- 工具函数：将可能含斜杠的车名拆成数组 ----------
     function parseCarGroup(cell) {
@@ -468,38 +492,69 @@
         return found ? found.orderGroups : null;
     }
 
-    // ---------- 无重复推荐算法 ----------
-    function recommendWithoutRepeat(selections, ownedSet) {
-        const usedCars = new Set();
-        const results = [];
-
-        for (let sel of selections) {
-            if (!sel) {
-                results.push(null);
-                continue;
+    // ---------- 生成所有可行的分配方案 (回溯) ----------
+    function generateAllSchemes(selections, ownedSet) {
+        // selections: 长度为5的数组，每个元素为 {big, small} 或 null
+        // 找出有效的地图索引
+        const validIndices = [];
+        const validSelections = [];
+        selections.forEach((sel, idx) => {
+            if (sel) {
+                validIndices.push(idx);
+                validSelections.push(sel);
             }
+        });
+        const n = validIndices.length;
+        if (n === 0) return [];
+
+        // 预先计算每张有效图的候选组（每组内只保留已拥有的车）
+        const candidatesPerMap = validSelections.map(sel => {
             const groups = getOrderGroups(sel.big, sel.small);
-            if (!groups) {
-                results.push(null);
-                continue;
+            if (!groups) return [];
+            // 保留组结构，每组过滤出拥有的车
+            return groups.map(group => group.filter(car => ownedSet.has(car)));
+        });
+
+        const results = [];
+        const used = new Set();
+        const current = []; // 存放 {mapIdx, car}，mapIdx是有效图中的索引
+
+        function backtrack(mapIdx) {
+            if (mapIdx === n) {
+                // 构建完整分配数组 (长度5)
+                const assignment = new Array(5).fill(null);
+                current.forEach(item => {
+                    assignment[validIndices[item.mapIdx]] = item.car;
+                });
+                results.push(assignment);
+                return;
             }
 
-            let assignedCar = null;
+            const groups = candidatesPerMap[mapIdx];
+            // 如果该图没有候选组，直接返回（此路不通）
+            if (groups.length === 0) return;
+
             for (let group of groups) {
-                const available = group.find(car => ownedSet.has(car) && !usedCars.has(car));
-                if (available) {
-                    assignedCar = available;
-                    usedCars.add(available);
-                    break;
+                if (group.length === 0) continue;
+                for (let car of group) {
+                    if (!used.has(car)) {
+                        used.add(car);
+                        current.push({ mapIdx, car });
+                        backtrack(mapIdx + 1);
+                        current.pop();
+                        used.delete(car);
+                    }
                 }
             }
-            results.push(assignedCar);
         }
+
+        backtrack(0);
         return results;
     }
 
-    // ---------- 渲染结果 ----------
-    function renderResults() {
+    // ---------- 更新方案下拉列表和结果展示 ----------
+    function updateSchemesAndResults() {
+        // 收集当前五张图的选择
         const selections = [];
         for (let i = 0; i < ROWS; i++) {
             const big = bigSelects[i].value;
@@ -512,28 +567,88 @@
         }
 
         const owned = selectedCars;
-        const recommendedCars = recommendWithoutRepeat(selections, owned);
+        allSchemes = generateAllSchemes(selections, owned);
 
-        let html = '';
-        selections.forEach((sel, idx) => {
-            const car = recommendedCars[idx];
-            if (!sel) {
-                html += `<div class="result-item"><div class="result-map">第${idx+1}图</div><div class="result-bigmap">未选地图</div><div class="result-car empty">⛔ 未选</div></div>`;
-            } else {
-                if (car) {
-                    html += `<div class="result-item"><div class="result-map">${sel.small}</div><div class="result-bigmap">${sel.big}</div><div class="result-car">🏎️ ${car}</div></div>`;
+        // 填充下拉
+        schemeSelect.innerHTML = '';
+        if (allSchemes.length === 0) {
+            const option = document.createElement('option');
+            option.textContent = '无可行方案';
+            option.value = '-1';
+            schemeSelect.appendChild(option);
+            schemeSelect.disabled = true;
+            // 显示所有地图无可用车
+            renderSchemeInGrid(null);
+        } else {
+            schemeSelect.disabled = false;
+            allSchemes.forEach((scheme, idx) => {
+                // 生成方案摘要：图序号+车名，例如“1:车A 2:车B …”
+                const parts = [];
+                for (let i = 0; i < selections.length; i++) {
+                    if (selections[i]) {
+                        const car = scheme[i] || '?';
+                        parts.push(`${i+1}:${car}`);
+                    }
+                }
+                const option = document.createElement('option');
+                option.value = idx;
+                option.textContent = `方案${idx+1} — ` + parts.join(' ');
+                schemeSelect.appendChild(option);
+            });
+            // 默认选中第一个方案
+            schemeSelect.value = 0;
+            renderSchemeInGrid(allSchemes[0]);
+        }
+    }
+
+    // 将指定方案渲染到结果网格
+    function renderSchemeInGrid(scheme) {
+        if (!scheme) {
+            // 无方案：所有已选地图显示“无可用车”
+            let html = '';
+            for (let i = 0; i < ROWS; i++) {
+                const big = bigSelects[i].value;
+                const small = smallSelects[i].value;
+                if (big && small) {
+                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car empty">❌ 无可用车</div></div>`;
                 } else {
-                    html += `<div class="result-item"><div class="result-map">${sel.small}</div><div class="result-bigmap">${sel.big}</div><div class="result-car empty">❌ 无可用车</div></div>`;
+                    html += `<div class="result-item"><div class="result-map">第${i+1}图</div><div class="result-bigmap">未选地图</div><div class="result-car empty">⛔ 未选</div></div>`;
                 }
             }
-        });
+            resultGrid.innerHTML = html;
+            return;
+        }
+
+        let html = '';
+        for (let i = 0; i < ROWS; i++) {
+            const big = bigSelects[i].value;
+            const small = smallSelects[i].value;
+            if (big && small) {
+                const car = scheme[i];
+                if (car) {
+                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car">🏎️ ${car}</div></div>`;
+                } else {
+                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car empty">❌ 无可用车</div></div>`;
+                }
+            } else {
+                html += `<div class="result-item"><div class="result-map">第${i+1}图</div><div class="result-bigmap">未选地图</div><div class="result-car empty">⛔ 未选</div></div>`;
+            }
+        }
         resultGrid.innerHTML = html;
     }
 
     // ---------- 绑定事件 ----------
     function bindEvents() {
         bigSelects.forEach(sel => sel.addEventListener('change', refreshBigMaps));
-        recommendBtn.addEventListener('click', renderResults);
+        recommendBtn.addEventListener('click', () => {
+            updateSchemesAndResults();
+        });
+        schemeSelect.addEventListener('change', (e) => {
+            const idx = parseInt(e.target.value, 10);
+            if (!isNaN(idx) && idx >= 0 && idx < allSchemes.length) {
+                renderSchemeInGrid(allSchemes[idx]);
+            }
+        });
         selectAllBtn.addEventListener('click', selectAll);
         clearAllBtn.addEventListener('click', clearAll);
     }
@@ -546,12 +661,11 @@
             RACE_DATA = await response.json();
             buildMapIndex();
 
-            // 现在可以安全渲染
             renderMapRows();
             renderGarage();
             refreshBigMaps();
             bindEvents();
-            renderResults();
+            updateSchemesAndResults(); // 初始计算结果
         } catch (err) {
             mapRowsContainer.innerHTML = `<div class="loading">❌ 加载数据失败，请确保 data.json 存在且可访问</div>`;
             console.error(err);
