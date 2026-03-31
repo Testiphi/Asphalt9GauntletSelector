@@ -1,303 +1,340 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>狂野飙车9 · 擂台选车助手 v0.9</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>狂野飙车9 · 擂台选车助手 · 最佳方案精选</title>
     <style>
         * {
             box-sizing: border-box;
-            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
         body {
-            background: #1a1f2b;
+            background: #0b0f17;
             margin: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 16px;
+            padding: 20px;
         }
         .card {
-            max-width: 1200px;
+            max-width: 1280px;
             width: 100%;
-            background: #121724;
-            border-radius: 28px;
-            padding: 24px;
-            border: 1px solid #2f3a55;
-            box-shadow: 0 12px 30px #00000080;
+            background: #111827;
+            border-radius: 32px;
+            padding: 24px 28px;
+            border: 1px solid #2a3650;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+            transition: all 0.2s;
         }
         h1 {
-            color: #fadf8a;
+            color: #f7d44a;
             font-size: 1.9rem;
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .sub {
-            color: #9aabd0;
-            margin-bottom: 24px;
-            border-left: 4px solid #3a66b4;
-            padding-left: 16px;
-            font-size: 0.95rem;
+            color: #9aa9ce;
+            margin-bottom: 28px;
+            border-left: 4px solid #e6b422;
+            padding-left: 18px;
+            font-size: 0.9rem;
+            font-weight: 400;
         }
         .map-rows {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
         .map-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: #1a2131;
-            padding: 12px 16px;
-            border-radius: 40px;
-            border: 1px solid #2d3b57;
+            gap: 14px;
+            background: #0f1624;
+            padding: 10px 18px;
+            border-radius: 60px;
+            border: 1px solid #2a3857;
+            backdrop-filter: blur(2px);
         }
         .map-index {
-            width: 32px; height: 32px;
-            background: #2c3e6b;
-            color: #fadf8a;
-            border-radius: 50%;
+            width: 36px; height: 36px;
+            background: #1f2a44;
+            color: #ffde9c;
+            border-radius: 40px;
             display: flex; align-items: center; justify-content: center;
             font-weight: bold;
             font-size: 1.2rem;
             flex-shrink: 0;
+            box-shadow: inset 0 1px 2px #00000030, 0 1px 0 #3a4870;
         }
         .map-select-group {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             flex-wrap: wrap;
             flex: 1;
         }
         .select-wrapper {
-            flex: 1 1 200px;
-            min-width: 160px;
+            flex: 1 1 210px;
+            min-width: 170px;
         }
         .select-wrapper label {
             display: block;
             font-size: 0.7rem;
-            color: #7f8fb2;
-            margin-bottom: 2px;
-            text-transform: uppercase;
+            color: #8f9ec7;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
         select {
             width: 100%;
             padding: 10px 14px;
-            background: #0e1420;
-            border: 1px solid #3b4770;
-            color: #eef3ff;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            background: #030617;
+            border: 1px solid #3a4880;
+            color: #f0f4ff;
+            border-radius: 34px;
+            font-size: 0.88rem;
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa9ce' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2393a5df' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
             background-repeat: no-repeat;
-            background-position: right 12px center;
+            background-position: right 14px center;
             background-size: 14px;
+            transition: 0.1s;
+        }
+        select:focus {
+            border-color: #f5c542;
+            outline: none;
         }
         select:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            opacity: 0.6;
+            cursor: default;
         }
         .garage {
-            background: #1a212f;
-            border-radius: 28px;
-            padding: 20px;
-            margin: 20px 0 25px;
-            border: 1px solid #2f3f60;
+            background: #0e1627;
+            border-radius: 32px;
+            padding: 18px 20px;
+            margin: 18px 0 24px;
+            border: 1px solid #29385c;
         }
         .garage-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            color: #b7c6ec;
+            align-items: baseline;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .garage-header h2 {
             margin: 0;
             font-size: 1.3rem;
-            font-weight: 500;
+            font-weight: 600;
+            color: #dbe4ff;
         }
         .garage-actions {
             display: flex;
             gap: 12px;
         }
         .garage-btn {
-            background: #26324a;
-            border: 1px solid #4c6190;
-            color: #cfdfff;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 0.85rem;
+            background: #202a42;
+            border: 1px solid #4f639a;
+            color: #f2e9c7;
+            padding: 5px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
             cursor: pointer;
-            user-select: none;
+            transition: 0.1s;
         }
         .garage-btn:hover {
-            background: #2f3e60;
+            background: #2f3e66;
+            border-color: #f5c542;
+            color: #fff2cf;
         }
         .car-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            max-height: 260px;
+            gap: 8px;
+            max-height: 270px;
             overflow-y: auto;
-            padding: 8px 4px;
-            background: #0e1625;
-            border-radius: 28px;
-            border: 1px solid #2f3d60;
+            padding: 8px 6px;
+            background: #070c18;
+            border-radius: 34px;
+            border: 1px solid #253153;
         }
         .car-tag {
-            background: #1f2b41;
-            color: #b9c8f0;
+            background: #18203a;
+            color: #cbd9ff;
             padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            border: 1px solid #3f5182;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #40548b;
             cursor: pointer;
+            transition: 0.08s linear;
             user-select: none;
-            transition: 0.1s;
-            display: inline-block;
         }
         .car-tag.selected {
-            background: #f5c542;
-            color: #121724;
-            border-color: #ffd966;
-            font-weight: 600;
-            box-shadow: 0 0 10px #f5b81b;
+            background: #f3bc3c;
+            color: #0e1422;
+            border-color: #ffdf8c;
+            font-weight: 700;
+            box-shadow: 0 0 6px #f5bc3c;
         }
         .action {
             text-align: center;
-            margin: 30px 0 20px;
+            margin: 18px 0 24px;
         }
         .recommend-btn {
-            background: linear-gradient(145deg, #f3b73e, #d48d1a);
+            background: linear-gradient(115deg, #f0b429, #cf951e);
             border: none;
-            color: #121724;
+            color: #0c1120;
             font-weight: bold;
-            font-size: 1.4rem;
-            padding: 16px 50px;
-            border-radius: 50px;
-            border-bottom: 3px solid #9e6512;
+            font-size: 1.35rem;
+            padding: 14px 42px;
+            border-radius: 70px;
+            border-bottom: 3px solid #9b6f18;
             cursor: pointer;
-            box-shadow: 0 8px 12px #00000060;
+            transition: 0.1s;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
         }
         .recommend-btn:hover {
-            background: linear-gradient(145deg, #ffcc5c, #e69f2e);
+            background: linear-gradient(115deg, #ffcd5a, #e6a82a);
+            transform: scale(0.98);
         }
         .result-panel {
-            background: #121a2b;
-            border-radius: 28px;
-            padding: 20px;
-            border: 1px solid #2b3a60;
+            background: #0f1628;
+            border-radius: 32px;
+            padding: 20px 22px;
+            border: 1px solid #2f3f6b;
         }
         .result-title {
-            color: #9eb1dc;
+            color: #cddcff;
             margin-bottom: 16px;
             font-size: 1.1rem;
-        }
-        .scheme-selector {
-            margin-bottom: 20px;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+        }
+        .scheme-selector {
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         .scheme-selector label {
-            color: #b7c6ec;
-            font-size: 0.95rem;
+            color: #bacaee;
+            font-weight: 500;
         }
         .scheme-selector select {
             width: auto;
-            min-width: 280px;
-            background: #1d263f;
-            border-color: #4e6390;
+            min-width: 320px;
+            background: #121b32;
+            border-color: #536cac;
         }
         .result-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
         }
         .result-item {
-            background: #1d263f;
-            border-radius: 24px;
-            padding: 16px 8px;
+            background: #141e38;
+            border-radius: 28px;
+            padding: 14px 8px;
             text-align: center;
-            border: 1px solid #36487a;
+            border: 1px solid #2e4278;
+            transition: 0.1s;
         }
         .result-map {
-            font-weight: 600;
-            color: #cfdbf5;
+            font-weight: 700;
+            color: #f2e4b3;
             font-size: 1rem;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .result-bigmap {
             font-size: 0.7rem;
-            color: #7a8bbd;
+            color: #8b9ad4;
             margin-bottom: 12px;
+            text-transform: uppercase;
         }
         .result-car {
-            background: #273458;
-            padding: 8px 0;
-            border-radius: 30px;
-            font-weight: 700;
-            color: #fadf8a;
-            border: 1px solid #5b71b0;
+            background: #1f2c54;
+            padding: 9px 0;
+            border-radius: 60px;
+            font-weight: 800;
+            color: #f8df96;
+            border: 1px solid #6b86c9;
+            font-size: 0.95rem;
         }
         .result-car.empty {
-            background: #1e2642;
-            color: #7b87ad;
-            border: 1px dashed #4d608b;
-            font-weight: 400;
+            background: #182040;
+            color: #7f8bbd;
+            border: 1px dashed #5b6fa5;
+            font-weight: 500;
+        }
+        .priority-badge {
+            font-size: 0.65rem;
+            background: #01040e60;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 6px;
+            color: #b7c5ff;
         }
         .footer-note {
-            color: #5a6d9b;
+            color: #596b9b;
             text-align: right;
-            margin-top: 10px;
-            font-size: 0.8rem;
+            margin-top: 14px;
+            font-size: 0.75rem;
         }
-        .loading {
-            color: #aaa;
-            text-align: center;
-            padding: 20px;
+        @media (max-width: 700px) {
+            .card { padding: 18px; }
+            .map-row { flex-wrap: wrap; }
         }
     </style>
 </head>
 <body>
 <div class="card">
-    <h1>🏁 擂台选车v0.9（非稳定版本）</h1>
-    <div class="sub">优先为左侧地图安排霸主车，可自行调整顺序得到更合适的方案。</div>
+    <h1>🏆 擂台选车 · 巅峰方案</h1>
+    <div class="sub">⭐ 基于优先级字典序自动萃取最佳分配方案 | 每张图均采用“最优/次优”车且全局不重复</div>
 
     <div class="map-rows" id="mapRowsContainer"></div>
 
     <div class="garage">
         <div class="garage-header">
-            <h2>🚗 我的车库 </h2>
+            <h2>🚘 我的车库（点亮拥有的车辆）</h2>
             <div class="garage-actions">
-                <span class="garage-btn" id="selectAllBtn">全部点亮</span>
-                <span class="garage-btn" id="clearAllBtn">全部熄灭</span>
+                <span class="garage-btn" id="selectAllBtn">✔ 全部点亮</span>
+                <span class="garage-btn" id="clearAllBtn">✖ 全部清空</span>
             </div>
         </div>
         <div class="car-grid" id="carGrid"></div>
     </div>
 
     <div class="action">
-        <button class="recommend-btn" id="recommendBtn">⚡ 重新计算所有方案 ⚡</button>
+        <button class="recommend-btn" id="recommendBtn">✨ 生成最佳方案（前5名） ✨</button>
     </div>
 
     <div class="result-panel">
-        <div class="result-title">📋 所有可行方案</div>
+        <div class="result-title">📌 最优分配方案库（按优先级排序）</div>
         <div class="scheme-selector">
-            <label for="schemeSelect">选择方案：</label>
+            <label for="schemeSelect">🏅 选择方案：</label>
             <select id="schemeSelect"></select>
         </div>
         <div class="result-grid" id="resultGrid"></div>
+        <div class="footer-note">🎯 方案按“五张图优先级向量”字典序排列（越靠前综合越优）｜ 同一辆车不会重复上场</div>
     </div>
-    <div class="footer-note">*方案按地图顺序分配，同一辆车不会出现在两个图中。</div>
 </div>
 
 <script>
 (function() {
-    // ---------- 硬编码车辆列表 ----------
+    // ----------------------------- 硬核车辆库（完整车库池）--------------------------------
     const USER_CARS = [
         "杰皇", "f5r", "r兔", "300+", "玻璃", "银电", "小蜥蜴", "恶魔", "大超", "莫斯勒", 
         "21c", "cc850", "f5", "风龙", "杰弟", "黑龙", "ssc", "c2", "猫头鹰", "白龙", 
@@ -307,10 +344,10 @@
         "风扇", "r牛", "er9", "六子", "sgt", "600lt", "帕梅", "5n"
     ];
 
-    // ---------- 全局变量 ----------
-    let RACE_DATA = null;               // 将从外部加载
+    // 全局数据
+    let RACE_DATA = null;               
     let bigMapList = [];
-    let smallMapsByBig = {};
+    let smallMapsByBig = {};            
 
     // DOM 元素
     const mapRowsContainer = document.getElementById('mapRowsContainer');
@@ -322,16 +359,16 @@
     const resultGrid = document.getElementById('resultGrid');
 
     const ROWS = 5;
-    const bigSelects = [];
-    const smallSelects = [];
+    let bigSelects = [];
+    let smallSelects = [];
 
-    // 点亮状态
+    // 车库选中集合
     let selectedCars = new Set();
 
-    // 当前所有方案列表
-    let allSchemes = [];  // 每个元素为长度为5的数组，对应每张图分配的车名（null表示该图未选或无法分配）
+    // 当前最佳方案列表 (每个元素包含 { assignment, priorityVector })
+    let currentBestSchemes = [];   
 
-    // ---------- 工具函数：将可能含斜杠的车名拆成数组 ----------
+    // ---------- 辅助: 解析车组（例如 "狼崽/火山" -> ["狼崽","火山"]）----------
     function parseCarGroup(cell) {
         if (typeof cell === 'string' && cell.includes('/')) {
             return cell.split('/').map(s => s.trim());
@@ -339,27 +376,25 @@
         return [cell];
     }
 
-    // ---------- 构建地图索引 (基于加载的数据) ----------
+    // ---------- 构建地图索引 ----------
     function buildMapIndex() {
         if (!RACE_DATA || !RACE_DATA.擂台选车表) return;
         const bigSet = new Set();
         const map = {};
-
         RACE_DATA.擂台选车表.forEach(item => {
             const big = item.大地图;
             const small = item.小地图;
-            const orderGroups = item.选车顺序.map(cell => parseCarGroup(cell));
-
+            const rawOrder = item.选车顺序;    // 原始顺序数组（可能含/）
+            const orderGroups = rawOrder.map(cell => parseCarGroup(cell));
             bigSet.add(big);
             if (!map[big]) map[big] = [];
             map[big].push({ name: small, orderGroups });
         });
-
         bigMapList = Array.from(bigSet).sort();
         smallMapsByBig = map;
     }
 
-    // ---------- 渲染五个地图行 ----------
+    // 渲染5个地图行 (初始空白下拉)
     function renderMapRows() {
         mapRowsContainer.innerHTML = '';
         for (let i = 0; i < ROWS; i++) {
@@ -369,11 +404,11 @@
                 <div class="map-index">${i+1}</div>
                 <div class="map-select-group">
                     <div class="select-wrapper">
-                        <label>大地图</label>
+                        <label>🏞️ 大地图</label>
                         <select class="big-map-select" data-index="${i}"></select>
                     </div>
                     <div class="select-wrapper">
-                        <label>小地图</label>
+                        <label>🗺️ 小地图</label>
                         <select class="small-map-select" data-index="${i}" disabled></select>
                     </div>
                 </div>
@@ -386,7 +421,7 @@
         }
     }
 
-    // ---------- 刷新大地图下拉 (互斥) ----------
+    // 刷新大地图选项（互斥逻辑避免同一大地图重复）
     function refreshBigMaps() {
         const oldBigValues = bigSelects.map(sel => sel.value);
         const oldSmallValues = smallSelects.map(sel => sel.value);
@@ -395,26 +430,19 @@
         bigSelects.forEach((sel, idx) => {
             const oldVal = oldBigValues[idx];
             sel.innerHTML = '';
-
             const emptyOpt = document.createElement('option');
             emptyOpt.value = '';
-            emptyOpt.textContent = '-- 大地图 --';
+            emptyOpt.textContent = '-- 选择大地图 --';
             sel.appendChild(emptyOpt);
-
             bigMapList.forEach(big => {
                 const opt = document.createElement('option');
                 opt.value = big;
                 opt.textContent = big;
-
                 const usedCount = currentSelectedBigs.filter(v => v === big).length;
-                const isSelfSelected = (oldVal === big);
-                const otherCount = usedCount - (isSelfSelected ? 1 : 0);
-                if (otherCount > 0) {
-                    opt.disabled = true;
-                }
+                const isSelf = (oldVal === big);
+                if (!isSelf && usedCount > 0) opt.disabled = true;
                 sel.appendChild(opt);
             });
-
             if (oldVal && Array.from(sel.options).some(opt => opt.value === oldVal && !opt.disabled)) {
                 sel.value = oldVal;
             } else {
@@ -429,24 +457,22 @@
         });
     }
 
-    // 更新单个小地图下拉
+    // 更新小地图下拉
     function updateSmallMapSelect(index, bigMap, oldSmall) {
         const smallSel = smallSelects[index];
         smallSel.innerHTML = '';
         if (!bigMap || !smallMapsByBig[bigMap]) {
             smallSel.disabled = true;
             const opt = document.createElement('option');
-            opt.textContent = '-- 先选大地图 --';
+            opt.textContent = '❌ 先选大地图';
             smallSel.appendChild(opt);
             return;
         }
-
         smallSel.disabled = false;
         const emptyOpt = document.createElement('option');
         emptyOpt.value = '';
-        emptyOpt.textContent = '-- 小地图 --';
+        emptyOpt.textContent = '-- 选择小地图 --';
         smallSel.appendChild(emptyOpt);
-
         const smallList = smallMapsByBig[bigMap];
         smallList.forEach(sm => {
             const opt = document.createElement('option');
@@ -454,7 +480,6 @@
             opt.textContent = sm.name;
             smallSel.appendChild(opt);
         });
-
         if (oldSmall && smallList.some(sm => sm.name === oldSmall)) {
             smallSel.value = oldSmall;
         } else {
@@ -462,7 +487,7 @@
         }
     }
 
-    // ---------- 渲染车库网格 ----------
+    // ---------- 车库渲染 ----------
     function renderGarage() {
         carGrid.innerHTML = '';
         USER_CARS.forEach(car => {
@@ -478,215 +503,293 @@
         });
     }
 
-    function selectAll() {
-        USER_CARS.forEach(c => selectedCars.add(c));
-        renderGarage();
-    }
-    function clearAll() {
-        selectedCars.clear();
-        renderGarage();
-    }
+    function selectAll() { USER_CARS.forEach(c => selectedCars.add(c)); renderGarage(); }
+    function clearAll() { selectedCars.clear(); renderGarage(); }
 
-    // ---------- 获取地图的推荐顺序 ----------
-    function getOrderGroups(big, small) {
+    // 获取地图原始推荐组(未过滤) 和 每个车的优先级映射
+    function getOriginalGroups(big, small) {
         const list = smallMapsByBig[big];
         if (!list) return null;
         const found = list.find(item => item.name === small);
         return found ? found.orderGroups : null;
     }
 
-    // ---------- 生成所有可行的分配方案 (回溯) ----------
-    function generateAllSchemes(selections, ownedSet) {
-        // selections: 长度为5的数组，每个元素为 {big, small} 或 null
-        // 找出有效的地图索引
-        const validIndices = [];
-        const validSelections = [];
-        selections.forEach((sel, idx) => {
-            if (sel) {
-                validIndices.push(idx);
-                validSelections.push(sel);
-            }
-        });
-        const n = validIndices.length;
+    // 核心：生成最佳前N个方案（基于字典序优先级）
+    // selections: 有效地图列表 [{ big, small }, ...] 长度 <=5
+    // ownedSet: 已拥有车辆集合
+    // maxSchemes: 最多保留方案数量
+    function generateTopSchemes(validSelections, ownedSet, maxSchemes = 5) {
+        const n = validSelections.length;
         if (n === 0) return [];
 
-        // 预先计算每张有效图的候选组（每组内只保留已拥有的车）
-        const candidatesPerMap = validSelections.map(sel => {
-            const groups = getOrderGroups(sel.big, sel.small);
-            if (!groups) return [];
-            // 保留组结构，每组过滤出拥有的车
-            return groups.map(group => group.filter(car => ownedSet.has(car)));
-        });
+        // 1. 预计算每张图的信息：原始分组（用于优先级索引）、过滤后的候选组（只含拥有车）
+        const mapsData = [];
+        for (let i = 0; i < n; i++) {
+            const { big, small } = validSelections[i];
+            const originalGroups = getOriginalGroups(big, small);
+            if (!originalGroups) return [];
+            
+            // 过滤候选: 每组只保留owned车辆
+            const filteredGroups = originalGroups.map(group => group.filter(car => ownedSet.has(car)));
+            // 同时构建 车->优先级索引 映射 (组索引)
+            const carToPriority = new Map();
+            for (let gIdx = 0; gIdx < originalGroups.length; gIdx++) {
+                const group = originalGroups[gIdx];
+                for (const car of group) {
+                    if (!carToPriority.has(car)) {
+                        carToPriority.set(car, gIdx);   // 第一次出现即最佳优先级
+                    }
+                }
+            }
+            mapsData.push({
+                filteredGroups,
+                carToPriority,
+                originalGroupsCount: originalGroups.length
+            });
+        }
 
-        const results = [];
-        const used = new Set();
-        const current = []; // 存放 {mapIdx, car}，mapIdx是有效图中的索引
+        // 2. 回溯构造所有可能分配，同时计算优先级向量
+        const allComplete = [];  // 存 { assignment(长度为n的car数组), vector(优先级数组) }
+        const usedCarsGlobal = new Set();
+        const currentAssignment = new Array(n).fill(null);
+        const currentVector = new Array(n).fill(99);
 
-        function backtrack(mapIdx) {
-            if (mapIdx === n) {
-                // 构建完整分配数组 (长度5)
-                const assignment = new Array(5).fill(null);
-                current.forEach(item => {
-                    assignment[validIndices[item.mapIdx]] = item.car;
+        function backtrack(idx) {
+            if (idx === n) {
+                // 生成完整方案，注意需要将有效地图映射回原长度5的展示需要，此处先存储针对有效索引的
+                allComplete.push({
+                    assignment: [...currentAssignment],
+                    vector: [...currentVector]
                 });
-                results.push(assignment);
                 return;
             }
-
-            const groups = candidatesPerMap[mapIdx];
-            // 如果该图没有候选组，直接返回（此路不通）
-            if (groups.length === 0) return;
-
-            for (let group of groups) {
+            const { filteredGroups, carToPriority } = mapsData[idx];
+            if (filteredGroups.length === 0) return; // 无任何候选组，剪枝
+            
+            for (let g = 0; g < filteredGroups.length; g++) {
+                const group = filteredGroups[g];
                 if (group.length === 0) continue;
-                for (let car of group) {
-                    if (!used.has(car)) {
-                        used.add(car);
-                        current.push({ mapIdx, car });
-                        backtrack(mapIdx + 1);
-                        current.pop();
-                        used.delete(car);
+                for (const car of group) {
+                    if (!usedCarsGlobal.has(car)) {
+                        const priority = carToPriority.get(car) ?? 99;
+                        usedCarsGlobal.add(car);
+                        currentAssignment[idx] = car;
+                        currentVector[idx] = priority;
+                        backtrack(idx + 1);
+                        usedCarsGlobal.delete(car);
+                        currentAssignment[idx] = null;
+                        currentVector[idx] = 99;
                     }
                 }
             }
         }
 
         backtrack(0);
-        return results;
+        if (allComplete.length === 0) return [];
+
+        // 3. 去重 & 字典序排序取前 maxSchemes 个
+        // 去重依据: vector 字符串 + assignment 可以简单依据 vector 去重，但同向量不同车保留最佳之一（任意保留一个）
+        const mapByVector = new Map();
+        for (const item of allComplete) {
+            const key = item.vector.join(',');
+            if (!mapByVector.has(key)) {
+                mapByVector.set(key, item);
+            }
+        }
+        const uniqueSchemes = Array.from(mapByVector.values());
+        
+        // 字典序排序 (比较priority向量)
+        uniqueSchemes.sort((a, b) => {
+            for (let i = 0; i < n; i++) {
+                if (a.vector[i] !== b.vector[i]) return a.vector[i] - b.vector[i];
+            }
+            return 0;
+        });
+        
+        // 取前maxSchemes个
+        const topRaw = uniqueSchemes.slice(0, maxSchemes);
+        
+        // 转换为最终结果：需要将assignment（长度n）扩展为总长度5的数组（无地图的位置为null）
+        const finalSchemes = topRaw.map(scheme => {
+            const fullAssignment = new Array(ROWS).fill(null);
+            const fullVector = new Array(ROWS).fill(null);
+            for (let i = 0; i < n; i++) {
+                const originalIdx = validSelections[i].originalIndex; // 需要记录原始index
+                fullAssignment[originalIdx] = scheme.assignment[i];
+                fullVector[originalIdx] = scheme.vector[i];
+            }
+            return { assignment: fullAssignment, vector: fullVector };
+        });
+        
+        return finalSchemes;
     }
 
-    // ---------- 更新方案下拉列表和结果展示 ----------
-    function updateSchemesAndResults() {
-        // 收集当前五张图的选择
-        const selections = [];
+    // 获取当前有效地图列表（带原始行索引）
+    function getCurrentValidMaps() {
+        const maps = [];
         for (let i = 0; i < ROWS; i++) {
             const big = bigSelects[i].value;
             const small = smallSelects[i].value;
             if (big && small) {
-                selections.push({ big, small });
-            } else {
-                selections.push(null);
+                maps.push({ big, small, originalIndex: i });
             }
         }
+        return maps;
+    }
 
-        const owned = selectedCars;
-        allSchemes = generateAllSchemes(selections, owned);
-
-        // 填充下拉
+    // 更新界面：生成最佳方案并渲染
+    function computeAndDisplayBestSchemes() {
+        const validMaps = getCurrentValidMaps();
+        if (validMaps.length === 0) {
+            currentBestSchemes = [];
+            schemeSelect.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.textContent = '⚠️ 请至少选择一张地图';
+            opt.disabled = true;
+            schemeSelect.appendChild(opt);
+            schemeSelect.disabled = true;
+            // 展示提示信息
+            resultGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#8f9bcb;">未选择任何地图，请先选择大地图与小地图</div>`;
+            return;
+        }
+        
+        // 调用生成前5个最佳方案（最大5个）
+        const topSchemes = generateTopSchemes(validMaps, selectedCars, 5);
+        currentBestSchemes = topSchemes;
+        
+        // 填充下拉菜单
         schemeSelect.innerHTML = '';
-        if (allSchemes.length === 0) {
+        if (currentBestSchemes.length === 0) {
             const option = document.createElement('option');
-            option.textContent = '无可行方案';
+            option.textContent = '😭 无可分配方案（车库缺少必要车辆或车辆冲突）';
             option.value = '-1';
             schemeSelect.appendChild(option);
             schemeSelect.disabled = true;
-            // 显示所有地图无可用车
-            renderSchemeInGrid(null);
-        } else {
-            schemeSelect.disabled = false;
-            allSchemes.forEach((scheme, idx) => {
-                // 生成方案摘要：图序号+车名，例如“1:车A 2:车B …”
-                const parts = [];
-                for (let i = 0; i < selections.length; i++) {
-                    if (selections[i]) {
-                        const car = scheme[i] || '?';
-                        parts.push(`${i+1}:${car}`);
-                    }
-                }
-                const option = document.createElement('option');
-                option.value = idx;
-                option.textContent = `方案${idx+1} — ` + parts.join(' ');
-                schemeSelect.appendChild(option);
-            });
-            // 默认选中第一个方案
-            schemeSelect.value = 0;
-            renderSchemeInGrid(allSchemes[0]);
+            renderResultGrid(null, validMaps);
+            return;
         }
+        
+        schemeSelect.disabled = false;
+        currentBestSchemes.forEach((scheme, idx) => {
+            // 制作摘要：展示每个图的车名和优先级数值
+            const parts = [];
+            for (let i = 0; i < ROWS; i++) {
+                if (bigSelects[i].value && smallSelects[i].value) {
+                    const car = scheme.assignment[i] || '?';
+                    const prio = scheme.vector[i] !== null ? scheme.vector[i] : '—';
+                    parts.push(`${i+1}:${car}(${prio})`);
+                }
+            }
+            const option = document.createElement('option');
+            option.value = idx;
+            option.textContent = `🏆 方案${idx+1} · 向量[${scheme.vector.filter(v=>v!==null).join(',')}]  | ${parts.join(' ')}`;
+            schemeSelect.appendChild(option);
+        });
+        schemeSelect.value = 0;
+        renderResultGrid(currentBestSchemes[0], validMaps);
     }
-
-    // 将指定方案渲染到结果网格
-    function renderSchemeInGrid(scheme) {
+    
+    // 渲染指定方案到结果网格 (传入完整方案对象及有效地图上下文)
+    function renderResultGrid(scheme, validMapsContext = null) {
         if (!scheme) {
-            // 无方案：所有已选地图显示“无可用车”
+            // 无方案展示占位
             let html = '';
             for (let i = 0; i < ROWS; i++) {
-                const big = bigSelects[i].value;
-                const small = smallSelects[i].value;
+                const big = bigSelects[i]?.value;
+                const small = smallSelects[i]?.value;
                 if (big && small) {
-                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car empty">❌ 无可用车</div></div>`;
+                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car empty">🚫 无法分配</div></div>`;
+                } else if (bigSelects[i]?.value || smallSelects[i]?.value) {
+                    html += `<div class="result-item"><div class="result-map">未选完整</div><div class="result-bigmap">--</div><div class="result-car empty">⛔ 缺地图</div></div>`;
                 } else {
-                    html += `<div class="result-item"><div class="result-map">第${i+1}图</div><div class="result-bigmap">未选地图</div><div class="result-car empty">⛔ 未选</div></div>`;
+                    html += `<div class="result-item"><div class="result-map">第${i+1}图</div><div class="result-bigmap">未选</div><div class="result-car empty">⚡ 待选图</div></div>`;
                 }
             }
             resultGrid.innerHTML = html;
             return;
         }
-
+        
         let html = '';
         for (let i = 0; i < ROWS; i++) {
             const big = bigSelects[i].value;
             const small = smallSelects[i].value;
             if (big && small) {
-                const car = scheme[i];
+                const car = scheme.assignment[i];
+                const priorityVal = scheme.vector[i];
                 if (car) {
-                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car">🏎️ ${car}</div></div>`;
+                    html += `<div class="result-item">
+                        <div class="result-map">${small}</div>
+                        <div class="result-bigmap">${big}</div>
+                        <div class="result-car">🏎️ ${car}</div>
+                        <div class="priority-badge">⭐ 优先级 ${priorityVal}</div>
+                    </div>`;
                 } else {
-                    html += `<div class="result-item"><div class="result-map">${small}</div><div class="result-bigmap">${big}</div><div class="result-car empty">❌ 无可用车</div></div>`;
+                    html += `<div class="result-item">
+                        <div class="result-map">${small}</div>
+                        <div class="result-bigmap">${big}</div>
+                        <div class="result-car empty">❌ 无可用车</div>
+                    </div>`;
                 }
             } else {
-                html += `<div class="result-item"><div class="result-map">第${i+1}图</div><div class="result-bigmap">未选地图</div><div class="result-car empty">⛔ 未选</div></div>`;
+                html += `<div class="result-item">
+                    <div class="result-map">第${i+1}位</div>
+                    <div class="result-bigmap">未选地图</div>
+                    <div class="result-car empty">⛔ 未配置</div>
+                </div>`;
             }
         }
         resultGrid.innerHTML = html;
     }
-
-    // ---------- 绑定事件 ----------
-    function bindEvents() {
-        bigSelects.forEach(sel => sel.addEventListener('change', refreshBigMaps));
-        recommendBtn.addEventListener('click', () => {
-            updateSchemesAndResults();
-        });
+    
+    // 监听方案下拉变化
+    function bindSchemeChange() {
         schemeSelect.addEventListener('change', (e) => {
             const idx = parseInt(e.target.value, 10);
-            if (!isNaN(idx) && idx >= 0 && idx < allSchemes.length) {
-                renderSchemeInGrid(allSchemes[idx]);
+            if (!isNaN(idx) && idx >= 0 && idx < currentBestSchemes.length) {
+                renderResultGrid(currentBestSchemes[idx], null);
             }
         });
-        selectAllBtn.addEventListener('click', selectAll);
-        clearAllBtn.addEventListener('click', clearAll);
     }
-
-    // ---------- 初始化 (等待数据加载) ----------
+    
+    // 全量刷新 (地图修改后重新计算)
+    function refreshAll() {
+        refreshBigMaps();          // 更新下拉互斥
+        computeAndDisplayBestSchemes(); 
+    }
+    
+    // 绑定监听地图变更 + 按钮
+    function bindEvents() {
+        bigSelects.forEach(sel => sel.addEventListener('change', refreshAll));
+        // 小地图变化也触发重新计算
+        smallSelects.forEach(sel => sel.addEventListener('change', refreshAll));
+        recommendBtn.addEventListener('click', () => {
+            computeAndDisplayBestSchemes();
+        });
+        selectAllBtn.addEventListener('click', () => { selectAll(); computeAndDisplayBestSchemes(); });
+        clearAllBtn.addEventListener('click', () => { clearAll(); computeAndDisplayBestSchemes(); });
+        bindSchemeChange();
+    }
+    
+    // 初始化：加载数据
     async function initApp() {
         try {
             const response = await fetch('data.json');
-            if (!response.ok) throw new Error('数据加载失败');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             RACE_DATA = await response.json();
             buildMapIndex();
-
             renderMapRows();
             renderGarage();
-            refreshBigMaps();
+            refreshBigMaps();      // 初始填充大地图选项
             bindEvents();
-            updateSchemesAndResults(); // 初始计算结果
+            computeAndDisplayBestSchemes();
         } catch (err) {
-            mapRowsContainer.innerHTML = `<div class="loading">❌ 加载数据失败，请确保 data.json 存在且可访问</div>`;
+            mapRowsContainer.innerHTML = `<div class="loading" style="color:#f99;padding:30px;">❌ 加载失败: ${err.message}<br>请确保 data.json 文件存在且格式正确</div>`;
             console.error(err);
         }
     }
-
+    
     initApp();
 })();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
