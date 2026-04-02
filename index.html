@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>狂野飙车9 · 擂台选车 · 帕累托最优方案</title>
+    <title>狂野飙车9 · 擂台选车小助手</title>
     <style>
         * {
             box-sizing: border-box;
@@ -290,7 +290,7 @@
 </head>
 <body>
 <div class="card">
-    <h1>🏆 擂台选车 · 帕累托最优方案</h1>
+    <h1>🏆 擂台选车v0.9（非稳定版本）</h1>
     <div class="sub">🚀 仅保留“无法被其他方案全面超越”的分配策略 | 每张图优先级数值越小越强</div>
 
     <div class="map-rows" id="mapRowsContainer"></div>
@@ -307,12 +307,12 @@
     </div>
 
     <div class="action">
-        <button class="recommend-btn" id="recommendBtn">✨ 生成帕累托最优方案 ✨</button>
+        <button class="recommend-btn" id="recommendBtn">✨ 生成方案 ✨</button>
     </div>
 
     <div class="result-panel">
         <div class="result-title">
-            📌 最佳方案（非支配集合）
+            📌 一个可能的方案
             <span class="badge-pareto" id="schemeCountBadge">0</span>
         </div>
         <div class="scheme-selector">
@@ -320,7 +320,7 @@
             <select id="schemeSelect"></select>
         </div>
         <div class="result-grid" id="resultGrid"></div>
-        <div class="footer-note">🎯 每个方案都是“帕累托前沿”上的点：不存在另一个方案在所有地图上优先级都不比你差且至少一张图严格更好。</div>
+        <div class="footer-note">给出的首个方案不一定为最优，需根据自身情况选择更好的方案</div>
     </div>
 </div>
 
